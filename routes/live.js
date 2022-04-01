@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { live } = require("../models");
+const { live, chat, live_survey } = require("../models");
 
 
 
