@@ -11,6 +11,11 @@ router.post("/", async (req, res) => {
             return res.status(400).json({ message: "invalid name, description or start_at" });
         }
 
+        const now = new Date();
+        if (start_at < now) {
+            return res.status(403).json({ message: "invalid start_at (start_at is in the past)" });
+        }
+
         return res.json({ 
             live: await live.create({
                 name,
