@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false,
         },
         start_at: {
-            type: DataTypes.DATETIME,
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        end_at: {
+            type: DataTypes.DATE,
             allowNull: true,
         },
         course_id: {
