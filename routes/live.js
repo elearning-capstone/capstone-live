@@ -87,4 +87,29 @@ router.post("/chat", async (req, res) => {
     }
 });
 
+router.post("/live_survey", async (req, res) => {
+    try {
+        const { live_id, survey_id } = req.query;
+
+        let count = await live.count({
+            where: {
+                id: live_id,
+            },
+        });
+
+        if (count == 0) {
+            return res.status(404).json({ message: "live not found" });
+        }
+
+        await live_survey.create({
+            live_id,
+            survey_id,
+        });
+
+        return res.json({ message: "success" });
+    } catch(err) {
+        return res.status(404).json({ message: "not found" });
+    }
+});
+
 module.exports = router;
