@@ -1,6 +1,6 @@
 const express = require("express");
+const { Op } = require("sequelize");
 const router = express.Router();
-const { Op } = require('sequelize')
 const axios = require("axios");
 const { live, chat, live_survey } = require("../models");
 
