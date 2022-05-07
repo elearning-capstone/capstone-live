@@ -5,6 +5,7 @@ const axios = require("axios");
 const { live, chat, live_survey } = require("../models");
 
 const survey_ip = "http://ip-172-31-37-162.ap-southeast-1.compute.internal:3000";
+// const survey_ip = "http://localhost:3001";
 
 router.post("/", async (req, res) => {
     try {
@@ -219,14 +220,14 @@ router.get("/sync", async (req, res) => {
         };
 
         if (time) {
-            condition.updated_at = {
+            condition.updatedAt = {
                 [Op.gte]: time,
             };
         }
 
         let chats = chat.findAll({
             attributes: [ "message", "user_id" ],
-            order: [ "created_at" ],
+            order: [ "createdAt" ],
             raw: true,
             where: condition,
         });
@@ -277,7 +278,7 @@ router.post("/chat", async (req, res) => {
     }
 });
 
-router.post("/live_survey", async (req, res) => {
+router.post("/survey", async (req, res) => {
     try {
         const { live_id, survey_id } = req.query;
 
