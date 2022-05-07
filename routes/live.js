@@ -316,4 +316,30 @@ router.post("/survey", async (req, res) => {
     }
 });
 
+router.get("/course_id", async (req, res) => {
+    try {
+        const { live_id } = req.query;
+
+        if (!live_id) {
+            return res.status(400).json({ message: "require live id" });
+        }
+
+        let course_id = await live.findOne({
+            attributes: [ "course_id" ],
+            raw: true,
+            where: {
+                live_id,
+            },
+        });
+
+        if (!course_id) {
+            return res.status(404).json({ message: "live not found" });
+        }
+
+        return res.json({ course_id: course_id.course_id });
+    } catch(err) {
+        return res.status(404).json({ message: "not found" });
+    }
+});
+
 module.exports = router;
