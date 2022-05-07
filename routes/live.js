@@ -199,6 +199,7 @@ router.delete("/", async (req, res) => {
 router.get("/sync", async (req, res) => {
     try {
         const { live_id, time, user_id } = req.query;
+        const new_time = new Date();
 
         if (!live_id) {
             return res.status(400).json({ message: "missing live id" });
@@ -221,6 +222,11 @@ router.get("/sync", async (req, res) => {
         if (time) {
             condition.updatedAt = {
                 [Op.gte]: time,
+                [Op.lt]: new_time,
+            };
+        } else {
+            condition.updatedAt = {
+                [Op.lt]: new_time,
             };
         }
 
@@ -251,6 +257,7 @@ router.get("/sync", async (req, res) => {
         return res.json({
             chat: await chats,
             live_survey: live_surveys.data,
+            time: new_time,
         });
     } catch(err) {
         return res.status(err.live_surveys.status || 404).json(err.live_surveys.data || { message: "not found" });
