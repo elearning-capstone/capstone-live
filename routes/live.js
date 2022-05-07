@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
         }
 
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        console.log(now);
 
         if (end_at <= start_at) {
             return res.status(403).json({ message: "invalid time: end_at must be after start_at" });
@@ -149,6 +148,7 @@ router.get("/", async (req, res) => {
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
         const current_live = await live.findOne({
+            attributes: { exclude: ["keygen", "createdAt", "updatedAt"] },
             where: {
                 course_id: course_id,
                 is_end: false,
@@ -157,7 +157,7 @@ router.get("/", async (req, res) => {
             }
         });
         
-        if (!current_live) return res.status(400).json({ message: "no live is broadcasting now" });
+        if (!current_live) return res.status(204).json({ message: "no live is broadcasting now" });
 
         return res.json({ live: current_live })
     } catch(err) {
