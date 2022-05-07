@@ -5,7 +5,6 @@ const axios = require("axios");
 const { live, chat, live_survey } = require("../models");
 
 const survey_ip = "http://ip-172-31-37-162.ap-southeast-1.compute.internal:3000";
-// const survey_ip = "http://localhost:3001";
 
 router.post("/", async (req, res) => {
     try {
@@ -239,6 +238,13 @@ router.get("/sync", async (req, res) => {
                 live_id,
             },
         });
+
+        if (live_surveys.length == 0) {
+            return res.json({
+                chat: await chats,
+                live_survey: [],
+            });
+        }
 
         live_surveys = await axios.get(survey_ip + "/survey/available", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
 
