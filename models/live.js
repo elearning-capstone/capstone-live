@@ -39,10 +39,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        video_url: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        }
     });
 
     return live;
