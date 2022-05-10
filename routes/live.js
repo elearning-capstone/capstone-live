@@ -60,8 +60,8 @@ router.put("/info", async (req, res) => {
         const { name, description } = req.body;
         const { live_id } = req.query;
 
-        if (typeof live_id != "number") {
-            return res.status(400).json({ message: "invalid live_id" });
+        if (!live_id) {
+            return res.status(400).json({ message: "missing live_id" });
         }
 
         let count = await live.count({
@@ -339,7 +339,7 @@ router.get("/course_id", async (req, res) => {
             attributes: [ "course_id" ],
             raw: true,
             where: {
-                live_id,
+                id: live_id,
             },
         });
 
