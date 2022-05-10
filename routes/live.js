@@ -96,7 +96,7 @@ router.put("/info", async (req, res) => {
 
 router.put("/", async (req, res) => {
     try {
-        const { name, description, keygen, stream_url, video_url } = req.body;
+        const { name, description, keygen, stream_url } = req.body;
         const { live_id } = req.query;
 
         if (!live_id) {
@@ -116,8 +116,7 @@ router.put("/", async (req, res) => {
         if (name && typeof name != "string" ||
             description && typeof description != "string" ||
             keygen && typeof keygen != "string" ||
-            stream_url && typeof stream_url != "string" ||
-            video_url && typeof video_url != "string" ) {
+            stream_url && typeof stream_url != "string" ) {
             return res.status(400).json({ message: "invalid field" });
         };
 
@@ -126,7 +125,6 @@ router.put("/", async (req, res) => {
         if (description) payload.description = description;
         if (keygen) payload.keygen = keygen;
         if (stream_url) payload.stream_url = stream_url;
-        if (video_url) payload.video_url = video_url;
 
         await live.update(payload, {
             where: {
