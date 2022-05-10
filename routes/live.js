@@ -4,6 +4,7 @@ const router = express.Router();
 const axios = require("axios");
 const { live, chat, live_survey } = require("../models");
 
+const course_ip = "http://ip-172-31-36-250.ap-southeast-1.compute.internal:3000";
 const survey_ip = "http://ip-172-31-37-162.ap-southeast-1.compute.internal:3000";
 
 router.post("/", async (req, res) => {
@@ -156,7 +157,10 @@ router.get("/", async (req, res) => {
             }
         });
         
-        if (!current_live) return res.status(204).json({ message: "no live is broadcasting now" });
+        if (!current_live) {
+            const videos = await axios.get(course_ip + "/course/videos", { params: { course_id } });
+            return res.json(videos.data);
+        }
 
         return res.json({ live: current_live })
     } catch(err) {
