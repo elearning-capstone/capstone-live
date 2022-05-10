@@ -159,10 +159,16 @@ router.get("/", async (req, res) => {
         
         if (!current_live) {
             const videos = await axios.get(course_ip + "/course/videos", { params: { course_id } });
-            return res.json(videos.data);
+            return res.json({
+                type: "videos",
+                videos: videos.data.videos
+            });
         }
 
-        return res.json({ live: current_live })
+        return res.json({
+            type: "live",
+            live: current_live 
+        })
     } catch(err) {
         return res.status(404).json({ message: "not found" });
     }
