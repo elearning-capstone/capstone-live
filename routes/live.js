@@ -259,6 +259,7 @@ router.get("/sync", async (req, res) => {
             return res.json({
                 chat: await chats,
                 live_survey: [],
+                time: new_time,
             });
         }
 
