@@ -60,8 +60,8 @@ router.put("/info", async (req, res) => {
         const { name, description } = req.body;
         const { live_id } = req.query;
 
-        if (typeof live_id != "number") {
-            return res.status(400).json({ message: "invalid live_id" });
+        if (!live_id) {
+            return res.status(400).json({ message: "missing live_id" });
         }
 
         let count = await live.count({
@@ -96,7 +96,7 @@ router.put("/info", async (req, res) => {
 
 router.put("/", async (req, res) => {
     try {
-        const { name, description, keygen, stream_url, video_url } = req.body;
+        const { name, description, keygen, stream_url } = req.body;
         const { live_id } = req.query;
 
         if (!live_id) {
@@ -116,8 +116,7 @@ router.put("/", async (req, res) => {
         if (name && typeof name != "string" ||
             description && typeof description != "string" ||
             keygen && typeof keygen != "string" ||
-            stream_url && typeof stream_url != "string" ||
-            video_url && typeof video_url != "string" ) {
+            stream_url && typeof stream_url != "string" ) {
             return res.status(400).json({ message: "invalid field" });
         };
 
@@ -126,7 +125,6 @@ router.put("/", async (req, res) => {
         if (description) payload.description = description;
         if (keygen) payload.keygen = keygen;
         if (stream_url) payload.stream_url = stream_url;
-        if (video_url) payload.video_url = video_url;
 
         await live.update(payload, {
             where: {
@@ -345,7 +343,7 @@ router.get("/course_id", async (req, res) => {
             attributes: [ "course_id" ],
             raw: true,
             where: {
-                live_id,
+                id: live_id,
             },
         });
 
