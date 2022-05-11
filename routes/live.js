@@ -259,6 +259,27 @@ router.get("/sync", async (req, res) => {
             },
         });
 
+
+        if (req.query.role == "lecturer") {
+            try {
+                var result = await axios.get(survey_ip + "/survey/result", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
+            } catch {
+                return res.json({
+                    chat: await chats,
+                    result: [],
+                    live_survey: [],
+                    time: new_time,
+                });
+            }
+
+            return res.json({
+                chat: await chats,
+                result,
+                live_survey: [],
+                time: new_time,
+            });
+        }
+
         if (live_surveys.length == 0) {
             return res.json({
                 chat: await chats,
@@ -267,7 +288,15 @@ router.get("/sync", async (req, res) => {
             });
         }
 
-        live_surveys = await axios.get(survey_ip + "/survey/available", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
+        try {
+            live_surveys = await axios.get(survey_ip + "/survey/available", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
+        } catch {
+            return res.json({
+                chat: await chats,
+                live_survey: [],
+                time: new_time,
+            });
+        }
 
         return res.json({
             chat: await chats,
