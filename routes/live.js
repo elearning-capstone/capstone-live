@@ -282,7 +282,7 @@ router.get("/sync", async (req, res) => {
             return res.json({
                 chat: await chats,
                 reaction: await reactions,
-                result: result.data,
+                result: result.data.result,
                 time: new_time,
             });
         }
