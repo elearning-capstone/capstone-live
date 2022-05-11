@@ -2,7 +2,7 @@ const express = require("express");
 const { Op } = require("sequelize");
 const router = express.Router();
 const axios = require("axios");
-const { live, chat, live_survey } = require("../models");
+const { live, chat, reaction, live_survey } = require("../models");
 
 const course_ip = "http://ip-172-31-36-250.ap-southeast-1.compute.internal:3000";
 const survey_ip = "http://ip-172-31-37-162.ap-southeast-1.compute.internal:3000";
@@ -251,6 +251,14 @@ router.get("/sync", async (req, res) => {
             where: condition,
         });
 
+        let reactions = reaction.findAll({
+            attributes: [ "reaction_type", "user_id", "createdAt" ],
+            order: [ "createdAt" ],
+            raw: true,
+            where: condition,
+            limit: 100,
+        });
+
         let live_surveys = await live_survey.findAll({
             attributes: [ "survey_id" ],
             raw: true,
@@ -259,13 +267,13 @@ router.get("/sync", async (req, res) => {
             },
         });
 
-
         if (req.query.role == "lecturer") {
             try {
                 var result = await axios.get(survey_ip + "/survey/result", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
             } catch {
                 return res.json({
                     chat: await chats,
+                    reaction: await reactions,
                     result: [],
                     time: new_time,
                 });
@@ -273,6 +281,7 @@ router.get("/sync", async (req, res) => {
 
             return res.json({
                 chat: await chats,
+                reaction: await reactions,
                 result,
                 time: new_time,
             });
@@ -281,6 +290,7 @@ router.get("/sync", async (req, res) => {
         if (live_surveys.length == 0) {
             return res.json({
                 chat: await chats,
+                reaction: await reactions,
                 live_survey: [],
                 time: new_time,
             });
@@ -291,6 +301,7 @@ router.get("/sync", async (req, res) => {
         } catch {
             return res.json({
                 chat: await chats,
+                reaction: await reactions,
                 live_survey: [],
                 time: new_time,
             });
@@ -298,6 +309,7 @@ router.get("/sync", async (req, res) => {
 
         return res.json({
             chat: await chats,
+            reaction: await reactions,
             live_survey: live_surveys.data,
             time: new_time,
         });
@@ -325,6 +337,33 @@ router.post("/chat", async (req, res) => {
             live_id,
             user_id,
             message,
+        });
+
+        return res.json({ message: "success" });
+    } catch(err) {
+        return res.status(404).json({ message: "not found" });
+    }
+});
+
+router.post("/reaction", async (req, res) => {
+    try {
+        const { live_id, user_id } = req.query;
+        const { reaction_type } = req.body;
+
+        let count = await live.count({
+            where: {
+                id: live_id,
+            },
+        });
+
+        if (count == 0) {
+            return res.status(404).json({ message: "live not found" });
+        }
+
+        await reaction.create({
+            live_id,
+            user_id,
+            reaction_type,
         });
 
         return res.json({ message: "success" });
