@@ -282,7 +282,7 @@ router.get("/sync", async (req, res) => {
             return res.json({
                 chat: await chats,
                 reaction: await reactions,
-                result,
+                result: result.data,
                 time: new_time,
             });
         }
@@ -310,7 +310,7 @@ router.get("/sync", async (req, res) => {
         return res.json({
             chat: await chats,
             reaction: await reactions,
-            live_survey: live_available_survey,
+            live_survey: await live_available_survey.data,
             time: new_time,
         });
     } catch(err) {
