@@ -147,7 +147,7 @@ router.get("/", async (req, res) => {
 
         let exclude = ["createdAt", "updatedAt"];
 
-        if (req.query.role == "lecturer") {
+        if (req.query.role != "lecturer") {
             exclude.push("keygen");
         }
 
