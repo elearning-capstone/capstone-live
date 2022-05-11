@@ -267,7 +267,6 @@ router.get("/sync", async (req, res) => {
                 return res.json({
                     chat: await chats,
                     result: [],
-                    live_survey: [],
                     time: new_time,
                 });
             }
@@ -275,7 +274,6 @@ router.get("/sync", async (req, res) => {
             return res.json({
                 chat: await chats,
                 result,
-                live_survey: [],
                 time: new_time,
             });
         }
