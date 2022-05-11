@@ -147,8 +147,14 @@ router.get("/", async (req, res) => {
 
         const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
+        let exclude = ["createdAt", "updatedAt"];
+
+        if (req.query.role == "lecturer") {
+            exclude.push("keygen");
+        }
+
         const current_live = await live.findOne({
-            attributes: { exclude: ["keygen", "createdAt", "updatedAt"] },
+            attributes: { exclude },
             where: {
                 course_id: course_id,
                 is_end: false,
