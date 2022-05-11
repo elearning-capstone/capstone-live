@@ -297,7 +297,7 @@ router.get("/sync", async (req, res) => {
         }
 
         try {
-            live_surveys = await axios.get(survey_ip + "/survey/available", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
+            var live_available_survey = await axios.get(survey_ip + "/survey/available", { params: { user_id, survey_id: live_surveys.map(element => element.survey_id) } });
         } catch {
             return res.json({
                 chat: await chats,
@@ -310,11 +310,11 @@ router.get("/sync", async (req, res) => {
         return res.json({
             chat: await chats,
             reaction: await reactions,
-            live_survey: live_surveys.data,
+            live_survey: live_available_survey,
             time: new_time,
         });
     } catch(err) {
-        return res.status(err.live_surveys.status || 404).json(err.live_surveys.data || { message: "not found" });
+        return res.status(404).json({ message: "not found" });
     }
 });
 
