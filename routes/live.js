@@ -222,6 +222,7 @@ router.get("/sync", async (req, res) => {
         let count = await live.count({
             where: {
                 id: live_id,
+                is_end: false,
             },
         });
 
